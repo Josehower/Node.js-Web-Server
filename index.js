@@ -5,17 +5,17 @@ const host = 'localhost';
 const port = 3000;
 
 function serverInit (response){
-  const requestListener = function (req, res) {   
+  const requestListener = function (req, res) {  
     if(req.url === "/all-in"){
     res.writeHead(200);
     res.end(response);
     }else{
-      
-      function print (fileName, contentType){
-      res.setHeader('Content-Type', `${contentType}`);
-      res.writeHead(200);
+
+      function print (fileName, contentType, isOk = true){
+      if (isOk) {res.setHeader('Content-Type', `${contentType}`);
+      res.writeHead(200)};
       fs.readFile(`./public/${fileName}`, (err, data) => {
-          if (err) throw err;
+          if (err) {res.end("<h1>404 sorry page not found</h1><a href='/'>Home</a>")};
           res.end(data);
         })
       }
@@ -24,14 +24,19 @@ function serverInit (response){
         case "/descriptive":
           print("Descriptive-Text", "text/plain")
           break;
+        case "/":
+          print("index.html", "text/html")
+          break;
         case "/image":
           print("Z-image.jpeg", "image/jpeg")
           break;
           case "/javascript":
             print("Javascript.js", "text/javascript")
             break;
+          case "/favicon.ico":
+            break;
         default:
-          print("index.html", "text/html")
+          print(`${req.url}`, "text/html")
       }
 
     }
