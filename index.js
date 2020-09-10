@@ -1,44 +1,46 @@
-const http = require("http");
+const http = require('http');
 const fs = require('fs');
 
 const host = 'localhost';
 const port = 3000;
 
-function serverInit (response){
-  const requestListener = function (req, res) {  
-    if(req.url === "/all-in"){
-    res.writeHead(200);
-    res.end(response);
-    }else{
-
-      function print (fileName, contentType, isOk = true){
-      if (isOk) {res.setHeader('Content-Type', `${contentType}`);
-      res.writeHead(200)};
-      fs.readFile(`./public/${fileName}`, (err, data) => {
-          if (err) {res.end("<h1>404 sorry page not found</h1><a href='/'>Home</a>")};
+function serverInit(response) {
+  const requestListener = function (req, res) {
+    if (req.url === '/all-in') {
+      res.writeHead(200);
+      res.end(response);
+    } else {
+      function print(fileName, contentType) {
+        res.setHeader('Content-Type', `${contentType}`);
+        res.writeHead(200);
+        fs.readFile(`./public/${fileName}`, (err, data) => {
+          if (err) {
+            res.end(
+              "<h1>404</h1> <h2>sorry page not found</h2><a href='/'>Home</a>",
+            );
+          }
           res.end(data);
-        })
+        });
       }
 
-      switch(req.url) {
-        case "/descriptive":
-          print("Descriptive-Text", "text/plain")
+      switch (req.url) {
+        case '/descriptive':
+          print('Descriptive-Text', 'text/plain');
           break;
-        case "/":
-          print("index.html", "text/html")
+        case '/':
+          print('index.html', 'text/html');
           break;
-        case "/image":
-          print("Z-image.jpeg", "image/jpeg")
+        case '/image':
+          print('Z-image.jpeg', 'image/jpeg');
           break;
-          case "/javascript":
-            print("Javascript.js", "text/javascript")
-            break;
-          case "/favicon.ico":
-            break;
+        case '/javascript':
+          print('Javascript.js', 'text/javascript');
+          break;
+        case '/favicon.ico':
+          break;
         default:
-          print(`${req.url}`, "text/html")
+          print(`${req.url}`, 'text/html');
       }
-
     }
   };
 
@@ -49,16 +51,16 @@ function serverInit (response){
   });
 }
 
-
-function readArr(arr){
-  let info=[];
+function readArr(arr) {
+  let info = [];
   arr.forEach((file, index) => {
-    info.push(new Promise(function(res,rej){
-      fs.readFile(`./public/${file}`, "utf8", (err,data)=>{
-        if(err)throw err;
-        res(`
+    info.push(
+      new Promise(function (res, rej) {
+        fs.readFile(`./public/${file}`, 'utf8', (err, data) => {
+          if (err) throw err;
+          res(`
 ===============================================================================
-FILE # ${index+1}                     FILE NAME: ${file}
+FILE # ${index + 1}                     FILE NAME: ${file}
 -------------------------------------------------------------------------------
 ${data}
 ===============================================================================
@@ -67,17 +69,15 @@ ${data}
 
 
         `);
-      })}))
+        });
+      }),
+    );
   });
 
-  Promise.all(info).then(res=>serverInit(res.join('')))
-  
+  Promise.all(info).then((res) => serverInit(res.join('')));
 }
-
-
 
 fs.readdir('./public', (err, data) => {
   if (err) throw err;
   readArr(data);
 });
-
