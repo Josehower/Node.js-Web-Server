@@ -1,0 +1,7 @@
+{
+  "name": "first-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Josehower <josehowerupn@gmail.com>",
+  "license": "MIT"
+}
