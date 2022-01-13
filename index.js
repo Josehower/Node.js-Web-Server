@@ -6,6 +6,7 @@ const port = 3000;
 
 function serverInit(response) {
   const requestListener = function (req, res) {
+    console.log(req.query);
     if (req.url === '/all-in') {
       res.writeHead(200);
       res.end(response);
